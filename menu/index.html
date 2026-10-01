@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Menú · Dos Castillos Café</title>
+<meta name="description" content="Pide desde tu mesa, para recoger o a domicilio. Café colombiano 100% de origen.">
+<meta name="theme-color" content="#0C0B0A">
+<meta property="og:title" content="Menú digital · Dos Castillos Café">
+<meta property="og:description" content="Elige tu bebida, dinos dónde estás y te avisamos cuando esté lista.">
+<meta property="og:image" content="https://sergio-lopez-am.github.io/DOSCASTILLOSCAFE/menu/assets/img/logo.png">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@400;500;600;700&family=Rubik+Dirt&display=swap" rel="stylesheet">
+<style>
+/* Layout: una sola columna tipo app en móvil; en escritorio carta con riel de categorías a la izquierda (como Starbucks) */
+:root {
+  --negro: #0C0B0A; --s1: #141210; --s2: #1C1815; --s3: #272119;
+  --linea: rgba(226, 176, 96, .16); --linea-fuerte: rgba(226, 176, 96, .38);
+  --crema: #F7F3EE; --texto2: #C8BFB5; --muted: #A09890;
+  --dorado: #C9933A; --oro: #E2B060; --naranja: #F0A020; --rojo: #7A1020; --rojo-vivo: #C4364B; --ok: #7BC47F;
+  --f-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --f-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mano: "Rubik Dirt", "Montserrat", system-ui, sans-serif;
+  --top: 64px; --radio: 16px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth }
+body { margin: 0; background: var(--negro); color: var(--crema); font: 15px/1.5 var(--f-body); min-height: 100vh; -webkit-font-smoothing: antialiased }
+body.lock { overflow: hidden }
+img { max-width: 100%; display: block }
+button, input, select, textarea { font: inherit; color: inherit }
+button { cursor: pointer }
+:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px }
+[hidden] { display: none !important }
+.mano { font-family: var(--f-mano); color: var(--naranja); font-weight: 400; letter-spacing: .02em }
+.num { font-variant-numeric: tabular-nums }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding-inline: 16px }
+
+/* ---------- Barra superior ---------- */
+.top { position: sticky; top: 0; z-index: 30; background: rgba(12, 11, 10, .88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); padding-top: env(safe-area-inset-top, 0px) }
+.top .wrap { height: var(--top); display: flex; align-items: center; gap: 12px }
+.marca { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; text-align: left; min-width: 0 }
+.marca img { width: 40px; height: 40px; object-fit: contain; flex: none }
+.marca b { display: block; font: 600 19px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap }
+.marca small { display: block; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--oro); margin-top: 3px }
+.top .sp { flex: 1 }
+.chip-mesa { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--oro); border: 1px solid var(--linea-fuerte); padding: 6px 10px; border-radius: 999px; white-space: nowrap }
+.btn-carrito { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linea-fuerte); background: var(--s1); display: grid; place-items: center; flex: none }
+.btn-carrito svg { width: 22px; height: 22px }
+.btn-carrito .badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--rojo-vivo); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center }
+
+/* ---------- Inicio ---------- */
+.hero { padding-block: 40px 20px; display: grid; gap: 10px }
+.eyebrow { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--oro); font-weight: 600 }
+.hero h1 { margin: 0; font: 500 clamp(46px, 11vw, 92px)/.9 var(--f-display); letter-spacing: -.01em; text-wrap: balance }
+.hero h1 .mano { display: block; font-size: .78em; line-height: 1; margin-top: 6px }
+.hero p { margin: 8px 0 0; color: var(--texto2); max-width: 44ch }
+.grupos { display: grid; gap: 14px; grid-template-columns: 1fr; padding-block: 18px 8px }
+@media (min-width: 700px) { .grupos { grid-template-columns: 1fr 1fr } }
+.grupo { position: relative; overflow: hidden; border-radius: 22px; border: 1px solid var(--linea); min-height: 230px; text-align: left; padding: 22px; display: flex; flex-direction: column; justify-content: flex-end; background: var(--s2); isolation: isolate; transition: transform .25s ease, border-color .25s }
+.grupo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 78%; z-index: -2; transition: transform .6s ease }
+.grupo::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(12,11,10,.1) 0%, rgba(12,11,10,.55) 45%, rgba(12,11,10,.94) 100%) }
+.grupo:hover { border-color: var(--linea-fuerte) }
+.grupo:hover img { transform: scale(1.04) }
+.grupo h2 { margin: 0; font: 500 40px/1 var(--f-display) }
+.grupo .mano { font-size: 26px; line-height: 1.1 }
+.grupo .meta { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--texto2) }
+.grupo .ir { width: 44px; height: 44px; border-radius: 50%; background: var(--oro); color: #1a1208; display: grid; place-items: center; font-size: 20px; font-weight: 700; flex: none }
+.grupo.pronto img { filter: grayscale(.7) brightness(.7) }
+.grupo.pronto .ir { background: transparent; color: var(--oro); border: 1px solid var(--linea-fuerte); width: auto; height: auto; border-radius: 999px; padding: 6px 12px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase }
+.pasos { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); padding-block: 26px 40px; margin: 0; list-style: none; counter-reset: paso }
+.pasos li { counter-increment: paso; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--linea) }
+.pasos li::before { content: counter(paso); grid-row: span 2; font: 500 34px/1 var(--f-display); color: var(--oro) }
+.pasos b { font-weight: 600 }
+.pasos span { color: var(--muted); font-size: 13px }
+.aviso-activo { margin-top: 18px; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; background: var(--s2); border: 1px solid var(--linea-fuerte); text-align: left; width: 100% }
+.aviso-activo .pulso { width: 10px; height: 10px; border-radius: 50%; background: var(--naranja); box-shadow: 0 0 0 0 rgba(240,160,32,.6); animation: pulso 1.8s infinite; flex: none }
+.aviso-activo div { flex: 1; min-width: 0 }
+.aviso-activo small { display: block; color: var(--muted) }
+@keyframes pulso { 70% { box-shadow: 0 0 0 10px rgba(240,160,32,0) } 100% { box-shadow: 0 0 0 0 rgba(240,160,32,0) } }
+
+/* ---------- Carta ---------- */
+.carta-head { padding-block: 22px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.volver { background: none; border: 0; color: var(--oro); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 8px 0 }
+.carta-head h1 { margin: 0; font: 500 clamp(36px, 8vw, 56px)/1 var(--f-display) }
+.tabs-grupo { display: flex; gap: 6px; background: var(--s1); border: 1px solid var(--linea); border-radius: 999px; padding: 4px }
+.tabs-grupo button { border: 0; background: none; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted) }
+.tabs-grupo button[aria-pressed="true"] { background: var(--oro); color: #1a1208 }
+.chips { position: sticky; top: calc(var(--top) + env(safe-area-inset-top, 0px)); z-index: 20; background: rgba(12,11,10,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--linea); margin-top: 12px }
+.chips .wrap { display: flex; gap: 8px; overflow-x: auto; padding-block: 10px; scrollbar-width: none }
+.chips .wrap::-webkit-scrollbar { display: none }
+.chips a { flex: none; text-decoration: none; color: var(--texto2); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--linea); white-space: nowrap }
+.chips a.on { background: var(--crema); color: var(--negro); border-color: var(--crema) }
+.carta { display: grid; gap: 0; padding-bottom: 120px }
+.rail { display: none }
+@media (min-width: 980px) {
+  .chips { display: none }
+  .carta { grid-template-columns: 220px minmax(0, 1fr); gap: 40px; padding-top: 18px }
+  .rail { display: block; position: sticky; top: calc(var(--top) + 24px); align-self: start }
+  .rail h3 { margin: 0 0 10px; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 600 }
+  .rail a { display: block; text-decoration: none; color: var(--texto2); padding: 9px 0 9px 14px; border-left: 2px solid var(--linea); font-size: 14px }
+  .rail a.on { color: var(--crema); border-left-color: var(--oro); font-weight: 600 }
+  .rail a span { color: var(--muted); font-weight: 400 }
+}
+.seccion { padding-top: 26px; scroll-margin-top: calc(var(--top) + 70px) }
+@media (min-width: 980px) { .seccion { scroll-margin-top: calc(var(--top) + 16px) } }
+.seccion h2 { margin: 0 0 4px; font: 500 34px/1.05 var(--f-display); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap }
+.seccion h2 .mano { font-size: 22px }
+.seccion > p { margin: 0 0 12px; color: var(--muted); font-size: 13px }
+.productos { display: grid; grid-template-columns: 1fr; gap: 0 }
+@media (min-width: 700px) { .productos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px } }
+@media (min-width: 1500px) { .productos { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+.prod { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--linea); text-align: left; background: none; border-left: 0; border-right: 0; border-top: 0; width: 100% }
+.prod .foto { width: 88px; height: 88px }
+.prod h3 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.25 }
+.prod p { margin: 3px 0 6px; color: var(--muted); font-size: 12.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+.prod .precio { color: var(--oro); font-weight: 600; font-size: 14px }
+.prod .tag { display: inline-block; margin-left: 6px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--linea); padding: 1px 6px; border-radius: 999px; vertical-align: 1px }
+.prod.agotado { opacity: .5 }
+.mas { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linea-fuerte); background: var(--s1); color: var(--oro); font-size: 22px; line-height: 1; display: grid; place-items: center; transition: background .2s, color .2s, transform .15s }
+.mas:hover { background: var(--oro); color: #1a1208 }
+.mas:active { transform: scale(.92) }
+.mas .n { font-size: 13px; font-weight: 700 }
+.mas.tiene { background: var(--oro); color: #1a1208; border-color: var(--oro) }
+.foto { border-radius: 50%; overflow: hidden; position: relative; background: radial-gradient(circle at 35% 30%, #3a2d20 0%, #1f1813 55%, #15110d 100%); border: 1px solid var(--linea); display: grid; place-items: center; color: var(--oro); flex: none }
+.foto img { width: 100%; height: 100%; object-fit: cover }
+.foto svg { width: 58%; height: 58% }
+.vacio-comida { padding-block: 40px 140px; display: grid; gap: 12px; max-width: 560px }
+.vacio-comida h2 { margin: 0; font: 500 40px/1.05 var(--f-display) }
+.vacio-comida p { margin: 0; color: var(--texto2) }
+
+/* ---------- Barra inferior del pedido ---------- */
+.barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(12,11,10,0), rgba(12,11,10,.96) 30%) }
+.barra button { width: 100%; max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 12px; border: 0; border-radius: 999px; padding: 14px 20px; background: var(--oro); color: #1a1208; font-weight: 700; font-size: 15px; box-shadow: 0 10px 30px rgba(0,0,0,.5) }
+.barra .cnt { background: #1a1208; color: var(--oro); border-radius: 999px; min-width: 28px; height: 28px; display: grid; place-items: center; font-size: 13px; padding: 0 8px }
+.barra .sp { flex: 1; text-align: left }
+
+/* ---------- Hojas (dialog) ---------- */
+dialog { border: 0; padding: 0; background: var(--s1); color: var(--crema); width: 100%; max-width: 560px; max-height: 92vh; margin: auto auto 0; border-radius: 22px 22px 0 0; border-top: 1px solid var(--linea-fuerte); overflow: hidden }
+dialog::backdrop { background: rgba(0,0,0,.66); backdrop-filter: blur(3px) }
+dialog[open] { animation: sube .28s cubic-bezier(.2,.8,.2,1) }
+@keyframes sube { from { transform: translateY(40px); opacity: 0 } }
+@media (min-width: 700px) { dialog { margin: auto; border-radius: 22px; border: 1px solid var(--linea-fuerte) } }
+.hoja { display: flex; flex-direction: column; max-height: calc(92vh - 2px); max-height: calc(92dvh - 2px) }
+.hoja-cuerpo { overflow-y: auto; padding: 20px 20px 8px; display: grid; gap: 18px; overscroll-behavior: contain }
+.hoja-pie { padding: 12px 20px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--linea); display: flex; gap: 10px; align-items: center; background: var(--s1) }
+.cerrar { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--linea-fuerte); background: rgba(12,11,10,.7); font-size: 18px; display: grid; place-items: center; z-index: 2 }
+.p-top { display: grid; justify-items: center; text-align: center; gap: 8px; padding-top: 8px }
+.p-top .foto { width: 180px; height: 180px }
+.p-top h2 { margin: 6px 0 0; font: 500 36px/1.05 var(--f-display); text-wrap: balance }
+.p-top p { margin: 0; color: var(--texto2); max-width: 40ch }
+.p-top .precio { color: var(--oro); font-weight: 700; font-size: 18px }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0 }
+legend, .lbl { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 8px; padding: 0 }
+.lbl .req { color: var(--naranja) }
+.opc { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--s2); cursor: pointer }
+.opc:has(input:checked) { border-color: var(--oro); background: var(--s3) }
+.opc input { accent-color: var(--oro); width: 18px; height: 18px; margin: 0 }
+.opc span { flex: 1 }
+.opc em { font-style: normal; color: var(--oro); font-size: 13px; font-weight: 600 }
+.campo { display: grid; gap: 6px }
+.campo input, .campo textarea, .campo select { width: 100%; background: var(--s2); border: 1px solid var(--linea); border-radius: 12px; padding: 13px 14px; font-size: 16px }
+.campo textarea { resize: vertical; min-height: 64px }
+.campo input:focus, .campo textarea:focus, .campo select:focus { border-color: var(--oro); outline: none }
+.campo .err { color: #ff8a8a; font-size: 12.5px }
+.campo.malo input, .campo.malo textarea { border-color: #ff8a8a }
+.stepper { display: flex; align-items: center; border: 1px solid var(--linea-fuerte); border-radius: 999px; flex: none }
+.stepper button { width: 42px; height: 44px; border: 0; background: none; font-size: 20px; color: var(--oro) }
+.stepper output { min-width: 26px; text-align: center; font-weight: 700 }
+.btn { border: 0; border-radius: 999px; padding: 14px 20px; font-weight: 700; font-size: 15px; background: var(--oro); color: #1a1208; display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; text-align: center }
+.btn:disabled { opacity: .55; cursor: wait }
+.btn.sec { background: transparent; color: var(--oro); border: 1px solid var(--linea-fuerte) }
+.btn.full { flex: 1; width: 100% }
+
+/* Carrito */
+.lineas { display: grid }
+.linea { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--linea) }
+.linea .foto { width: 52px; height: 52px }
+.linea b { font-weight: 600; display: block }
+.linea small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35 }
+.linea .der { display: grid; justify-items: end; gap: 6px }
+.linea .stepper button { width: 34px; height: 34px; font-size: 17px }
+.linea .editar { background: none; border: 0; padding: 0; text-align: left; min-width: 0 }
+.totales { display: flex; justify-content: space-between; align-items: baseline; padding-top: 6px }
+.totales b { font: 600 28px/1 var(--f-display); color: var(--oro) }
+.nota { font-size: 12px; color: var(--muted) }
+.vacio { text-align: center; color: var(--muted); padding: 30px 0 }
+
+/* ---------- Checkout ---------- */
+.checkout { max-width: 640px; margin: 0 auto; padding-block: 22px 140px; display: grid; gap: 26px }
+.checkout h1 { margin: 0; font: 500 44px/1 var(--f-display) }
+.modos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px }
+.modo { position: relative; display: grid; justify-items: center; gap: 6px; padding: 16px 6px 14px; border: 1px solid var(--linea); border-radius: 14px; background: var(--s1); text-align: center; cursor: pointer; font-size: 13px; font-weight: 600 }
+.modo input { position: absolute; opacity: 0; pointer-events: none }
+.modo svg { width: 30px; height: 30px; color: var(--oro) }
+.modo small { font-weight: 400; color: var(--muted); font-size: 11px }
+.modo:has(input:checked) { border-color: var(--oro); background: var(--s3); box-shadow: inset 0 0 0 1px var(--oro) }
+.modo:has(input:focus-visible) { outline: 2px solid var(--oro); outline-offset: 2px }
+.grid2 { display: grid; gap: 12px; grid-template-columns: 1fr }
+@media (min-width: 560px) { .grid2 { grid-template-columns: 1fr 1fr } }
+.pagos { display: grid; gap: 8px }
+.resumen { background: var(--s1); border: 1px solid var(--linea); border-radius: var(--radio); padding: 16px }
+.resumen .fila { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 14px }
+.resumen .fila span:first-child { min-width: 0 }
+.resumen .fila small { display: block; color: var(--muted); font-size: 12px }
+.error-envio { border: 1px solid rgba(255,138,138,.5); background: rgba(196,54,75,.12); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px }
+.error-envio p { margin: 0 }
+.enviar { position: sticky; bottom: 0; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(12,11,10,0), var(--negro) 35%) }
+
+/* ---------- Confirmación ---------- */
+.conf { max-width: 560px; margin: 0 auto; padding-block: 36px 80px; display: grid; gap: 22px; text-align: center; justify-items: center }
+.conf h1 { margin: 0; font: 500 44px/1 var(--f-display) }
+.codigo { font: 400 64px/1 var(--f-mano); color: var(--naranja); letter-spacing: .04em }
+.conf .sub { color: var(--texto2); margin: 0; max-width: 38ch }
+.tracker { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; list-style: none; padding: 0; margin: 8px 0 0 }
+.tracker li { position: relative; display: grid; justify-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); padding-top: 4px }
+.tracker li::before { content: ""; position: absolute; top: 15px; left: -50%; right: 50%; height: 2px; background: var(--linea) }
+.tracker li:first-child::before { display: none }
+.tracker .dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--linea-fuerte); background: var(--negro); z-index: 1; display: grid; place-items: center; font-size: 12px }
+.tracker li.hecho { color: var(--crema) }
+.tracker li.hecho::before { background: var(--oro) }
+.tracker li.hecho .dot { background: var(--oro); border-color: var(--oro); color: #1a1208 }
+.tracker li.actual .dot { box-shadow: 0 0 0 6px rgba(226,176,96,.18) }
+.estado-txt { font: 500 26px/1.15 var(--f-display); margin: 0 }
+.cancelado { color: #ff8a8a }
+.conf .resumen { width: 100%; text-align: left }
+.conf .acciones { display: grid; gap: 10px; width: 100% }
+.contacto { font-size: 13px; color: var(--muted) }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; z-index: 60; background: var(--crema); color: var(--negro); padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; transition: .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center }
+.toast.on { opacity: 1; transform: translate(-50%, 0) }
+
+footer.pie { border-top: 1px solid var(--linea); padding-block: 22px 120px; color: var(--muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: space-between }
+footer.pie a { color: var(--oro) }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <button class="marca" id="ir-inicio" type="button" aria-label="Ir al inicio">
+      <img src="assets/img/logo.png" alt="" width="40" height="40">
+      <span><b>Dos Castillos</b><small>Café de origen</small></span>
+    </button>
+    <span class="sp"></span>
+    <span class="chip-mesa" id="chip-mesa" hidden></span>
+    <button class="btn-carrito" id="abrir-carrito" type="button" aria-label="Ver mi pedido">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="badge num" id="badge" hidden>0</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- INICIO -->
+  <section id="v-inicio" class="wrap">
+    <div class="hero">
+      <span class="eyebrow">Menú digital · Café colombiano 100% de origen</span>
+      <h1>¿Qué se te<span class="mano">antoja hoy?</span></h1>
+      <p>Elige, dinos si estás en la mesa, pasas a recoger o lo quieres a domicilio, y te avisamos cuando esté listo.</p>
+      <button class="aviso-activo" id="aviso-activo" type="button" hidden></button>
+    </div>
+    <div class="grupos" id="grupos"></div>
+    <ol class="pasos">
+      <li><b>Elige tus productos</b><span>Toca + para sumar. Personaliza leche, sabor o indicaciones.</span></li>
+      <li><b>Dinos dónde lo quieres</b><span>En tu mesa, para recoger o a domicilio.</span></li>
+      <li><b>Sigue tu pedido</b><span>Verás cuando pase a preparación y cuando esté listo.</span></li>
+    </ol>
+    <footer class="pie">
+      <span>Precios en pesos colombianos con impoconsumo (8%) incluido.</span>
+      <span>WhatsApp <a id="wa-pie" href="https://wa.me/573212787690" target="_blank" rel="noopener">+57 321 278 7690</a> · <a href="https://www.instagram.com/cafedoscastillos/" target="_blank" rel="noopener">@cafedoscastillos</a></span>
+    </footer>
+  </section>
+
+  <!-- CARTA -->
+  <section id="v-carta" hidden>
+    <div class="wrap carta-head">
+      <div>
+        <button class="volver" id="volver-inicio" type="button">← Inicio</button>
+        <h1 id="carta-titulo">Café y bebidas</h1>
+      </div>
+      <div class="tabs-grupo" id="tabs-grupo" role="group" aria-label="Tipo de producto"></div>
+    </div>
+    <nav class="chips" aria-label="Categorías"><div class="wrap" id="chips"></div></nav>
+    <div class="wrap carta">
+      <nav class="rail" aria-label="Categorías" id="rail"></nav>
+      <div id="secciones"></div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section id="v-checkout" hidden>
+    <form class="wrap checkout" id="form-pedido" novalidate>
+      <div>
+        <button class="volver" type="button" id="volver-carta">← Seguir pidiendo</button>
+        <h1>Tu pedido</h1>
+      </div>
+
+      <fieldset>
+        <legend>¿Dónde lo disfrutas?</legend>
+        <div class="modos">
+          <label class="modo"><input type="radio" name="modo" id="modo-mesa" value="mesa">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 12h24M8 12v14M24 12v14M11 8h10"/><path d="M13 5c0 1.5 1 2 1 3M18 5c0 1.5 1 2 1 3"/></svg>
+            En la mesa<small>Te lo llevamos</small></label>
+          <label class="modo"><input type="radio" name="modo" id="modo-recoger" value="recoger">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11h16l-1.5 15a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z"/><path d="M12 11V8a4 4 0 0 1 8 0v3"/></svg>
+            Para recoger<small>Pasas por él</small></label>
+          <label class="modo"><input type="radio" name="modo" id="modo-domicilio" value="domicilio">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="23" r="3.5"/><circle cx="24" cy="23" r="3.5"/><path d="M12.5 23h8M20 23l-3-9h-5M17 14h5l3 5M6 14h5"/></svg>
+            A domicilio<small>Te lo enviamos</small></label>
+        </div>
+        <span class="campo" id="err-modo-c"><span class="err" id="err-modo" hidden>Elige cómo quieres tu pedido.</span></span>
+      </fieldset>
+
+      <div class="grid2">
+        <div class="campo" data-solo="mesa">
+          <label class="lbl" for="f-mesa">Número de mesa <span class="req">*</span></label>
+          <input id="f-mesa" name="mesa" inputmode="numeric" maxlength="3" placeholder="Ej: 4" autocomplete="off">
+          <span class="err" hidden>Escribe el número que está en tu mesa.</span>
+        </div>
+        <div class="campo">
+          <label class="lbl" for="f-nombre">Tu nombre <span class="req">*</span></label>
+          <input id="f-nombre" name="nombre" maxlength="40" autocomplete="given-name" placeholder="Para llamarte cuando esté listo">
+          <span class="err" hidden>Escribe tu nombre.</span>
+        </div>
+        <div class="campo">
+          <label class="lbl" for="f-tel">Celular (WhatsApp) <span class="req" data-req-tel>*</span></label>
+          <input id="f-tel" name="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="300 123 4567">
+          <span class="err" hidden>Escribe un celular válido (10 dígitos).</span>
+        </div>
+        <div class="campo" data-solo="recoger">
+          <label class="lbl" for="f-hora">¿Cuándo pasas?</label>
+          <select id="f-hora" name="hora">
+            <option>Lo antes posible</option><option>En 15 minutos</option><option>En 30 minutos</option><option>En 45 minutos</option><option>En 1 hora</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2" data-solo="domicilio">
+        <div class="campo">
+          <label class="lbl" for="f-dir">Dirección <span class="req">*</span></label>
+          <input id="f-dir" name="dir" maxlength="80" autocomplete="street-address" placeholder="Calle 10 # 20-30">
+          <span class="err" hidden>Escribe la dirección de entrega.</span>
+        </div>
+        <div class="campo">
+          <label class="lbl" for="f-barrio">Barrio <span class="req">*</span></label>
+          <input id="f-barrio" name="barrio" maxlength="40" placeholder="Barrio">
+          <span class="err" hidden>Escribe el barrio.</span>
+        </div>
+        <div class="campo" style="grid-column: 1 / -1">
+          <label class="lbl" for="f-ref">Indicaciones de entrega</label>
+          <input id="f-ref" name="ref" maxlength="80" placeholder="Torre, apartamento, punto de referencia">
+        </div>
+        <p class="nota" style="grid-column: 1 / -1; margin: 0">El valor del domicilio se confirma por WhatsApp antes de despachar.</p>
+      </div>
+
+      <fieldset>
+        <legend>¿Cómo pagas?</legend>
+        <div class="pagos" id="pagos"></div>
+      </fieldset>
+
+      <div class="campo">
+        <label class="lbl" for="f-obs">Comentarios para cocina</label>
+        <textarea id="f-obs" name="obs" maxlength="160" placeholder="Opcional"></textarea>
+      </div>
+
+      <div>
+        <span class="lbl">Resumen</span>
+        <div class="resumen" id="resumen"></div>
+        <p class="nota">Precios con impoconsumo (8%) incluido.</p>
+      </div>
+
+      <div class="error-envio" id="error-envio" hidden>
+        <p><b>No pudimos enviar el pedido.</b> Revisa tu conexión e inténtalo de nuevo. Si sigue fallando, envíalo por WhatsApp y lo recibimos igual.</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" type="submit">Reintentar</button>
+          <a class="btn sec" id="wa-respaldo" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="enviar"><button class="btn full" id="btn-enviar" type="submit">Enviar pedido</button></div>
+    </form>
+  </section>
+
+  <!-- CONFIRMACIÓN -->
+  <section id="v-conf" hidden>
+    <div class="wrap conf" id="conf"></div>
+  </section>
+</main>
+
+<div class="barra" id="barra" hidden>
+  <button type="button" id="barra-btn"><span class="cnt num" id="barra-cnt">0</span><span class="sp">Ver mi pedido</span><span class="num" id="barra-total">$0</span></button>
+</div>
+
+<dialog id="dlg-producto" aria-label="Producto"><form method="dialog" class="hoja" id="form-producto"></form></dialog>
+<dialog id="dlg-carrito" aria-label="Mi pedido"><div class="hoja" id="hoja-carrito"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/catalogo.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/core.js"></script>
+<script src="assets/iconos.js"></script>
+<script>
+(function () {
+  const CAT = window.CATALOGO, CFG = window.CONFIG, { money, esc, prod, adic } = DC;
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (_) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (_) {} }
+  };
+
+  const params = new URLSearchParams(location.search);
+  const mesaQR = (params.get("mesa") || "").replace(/\D/g, "").slice(0, 3);
+  const S = {
+    carrito: store.get("dc_carrito", []).filter((l) => prod[l.c]),
+    grupo: "bebidas",
+    activo: store.get("dc_pedido_activo", null),
+    perfil: store.get("dc_perfil", {})
+  };
+  if (S.activo && Date.now() - S.activo.t > 12 * 3600e3) { S.activo = null; store.del("dc_pedido_activo"); }
+
+  // ---------- helpers de producto ----------
+  function fotoHTML(p, perezosa) {
+    const inner = p.foto ? '<img src="assets/img/' + esc(p.foto) + '" alt=""' + (perezosa ? ' loading="lazy"' : "") + ">" : (ICONOS[p.icono] || ICONOS.taza);
+    return '<span class="foto">' + inner + "</span>";
+  }
+  const lineaKey = (l) => [l.c, l.o || "", (l.a || []).slice().sort().join("+"), (l.x || "").trim().toLowerCase()].join("|");
+  const detalleLinea = (l) => [l.o, ...(l.a || []).map((a) => "+ " + (adic[a] ? adic[a].nombre : a)), l.x ? "“" + l.x + "”" : ""].filter(Boolean).join(" · ");
+  const cuenta = () => S.carrito.reduce((s, l) => s + l.q, 0);
+  const total = () => DC.totalPedido(S.carrito) || 0;
+  const cantEnCarrito = (codigo) => S.carrito.filter((l) => l.c === codigo).reduce((s, l) => s + l.q, 0);
+
+  function guardarCarrito() { store.set("dc_carrito", S.carrito); pintarBarra(); pintarBotonesMas(); }
+  function agregar(linea) {
+    const k = lineaKey(linea), ex = S.carrito.find((l) => lineaKey(l) === k);
+    if (ex) ex.q = Math.min(20, ex.q + linea.q); else S.carrito.push(linea);
+    guardarCarrito();
+  }
+
+  let toastT;
+  function toast(msg) {
+    const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2200);
+  }
+
+  // ---------- vistas ----------
+  const VISTAS = ["inicio", "carta", "checkout", "conf"];
+  function mostrar(v, push = true) {
+    VISTAS.forEach((x) => ($("#v-" + x).hidden = x !== v));
+    S.vista = v;
+    pintarBarra();
+    if (push) history.pushState({ v, g: S.grupo }, "", location.search + (v === "inicio" ? "" : "#" + v));
+    window.scrollTo(0, 0);
+    if (v === "checkout") pintarCheckout();
+  }
+  window.addEventListener("popstate", (e) => {
+    const st = e.state || { v: "inicio" };
+    if (st.g && st.g !== S.grupo) { S.grupo = st.g; pintarCarta(); }
+    if (st.v === "checkout" && !S.carrito.length) return mostrar("carta", false);
+    if (st.v === "conf" && !S.activo) return mostrar("inicio", false);
+    mostrar(st.v, false);
+  });
+
+  // ---------- inicio ----------
+  function pintarInicio() {
+    $("#grupos").innerHTML = CAT.grupos.map((g) => {
+      const n = CAT.productos.filter((p) => { const c = DC.catOf(p); return c && c.grupo === g.id; }).length;
+      const pronto = g.pronto && !n;
+      return '<button class="grupo' + (pronto ? " pronto" : "") + '" type="button" data-grupo="' + g.id + '">' +
+        '<img src="assets/img/' + esc(g.foto) + '" alt="">' +
+        "<h2>" + esc(g.nombre) + '</h2><span class="mano">' + esc(g.acento) + "</span>" +
+        '<span class="meta"><span>' + (pronto ? "Estamos preparando esta carta" : n + " productos") + "</span>" +
+        '<span class="ir">' + (pronto ? "Muy pronto" : "→") + "</span></span></button>";
+    }).join("");
+    $$("#grupos .grupo").forEach((b) => (b.onclick = () => { S.grupo = b.dataset.grupo; pintarCarta(); mostrar("carta"); }));
+    pintarAvisoActivo();
+    if (mesaQR) { const c = $("#chip-mesa"); c.hidden = false; c.textContent = "Mesa " + mesaQR; }
+  }
+  function pintarAvisoActivo() {
+    const a = $("#aviso-activo");
+    if (!S.activo) { a.hidden = true; return; }
+    a.hidden = false;
+    const e = DC.ESTADOS[S.activo.estado || "nuevo"];
+    a.innerHTML = '<span class="pulso"></span><div><b>Tu pedido ' + esc(S.activo.id) + "</b><small>" + esc(e.txt) + " · toca para ver el estado</small></div><span>→</span>";
+    a.onclick = () => { pintarConfirmacion(); mostrar("conf"); };
+  }
+
+  // ---------- carta ----------
+  function pintarCarta() {
+    const g = CAT.grupos.find((x) => x.id === S.grupo);
+    $("#carta-titulo").textContent = g.nombre;
+    $("#tabs-grupo").innerHTML = CAT.grupos.map((x) => '<button type="button" aria-pressed="' + (x.id === S.grupo) + '" data-g="' + x.id + '">' + esc(x.nombre.split(" ")[0]) + "</button>").join("");
+    $$("#tabs-grupo button").forEach((b) => (b.onclick = () => { S.grupo = b.dataset.g; pintarCarta(); history.replaceState({ v: "carta", g: S.grupo }, ""); window.scrollTo(0, 0); }));
+
+    const cats = CAT.categorias.filter((c) => c.grupo === S.grupo)
+      .map((c) => ({ c, ps: CAT.productos.filter((p) => p.categoria === c.id) })).filter((x) => x.ps.length);
+
+    if (!cats.length) {
+      $("#chips").innerHTML = ""; $("#rail").innerHTML = "";
+      $("#secciones").innerHTML = '<div class="vacio-comida"><span class="eyebrow">Muy pronto</span><h2>Estamos preparando la carta de comida</h2>' +
+        "<p>Waffles de pandebono, bowls de yogurt con frutas y granola, croissants y más. Mientras tanto, acompaña el día con una de nuestras bebidas.</p>" +
+        '<div><button class="btn" type="button" id="ir-bebidas">Ver café y bebidas</button></div></div>';
+      $("#ir-bebidas").onclick = () => { S.grupo = "bebidas"; pintarCarta(); history.replaceState({ v: "carta", g: S.grupo }, ""); };
+      return;
+    }
+    $("#chips").innerHTML = cats.map((x) => '<a href="#cat-' + x.c.id + '" data-cat="' + x.c.id + '">' + esc(x.c.nombre + " " + x.c.acento) + "</a>").join("");
+    $("#rail").innerHTML = "<h3>" + esc(g.nombre) + "</h3>" + cats.map((x) => '<a href="#cat-' + x.c.id + '" data-cat="' + x.c.id + '">' + esc(x.c.nombre) + " <span>" + esc(x.c.acento) + "</span></a>").join("");
+    $("#secciones").innerHTML = cats.map((x) =>
+      '<section class="seccion" id="cat-' + x.c.id + '"><h2>' + esc(x.c.nombre) + ' <span class="mano">' + esc(x.c.acento) + "</span></h2>" +
+      '<div class="productos">' + x.ps.map(prodHTML).join("") + "</div></section>").join("");
+
+    $$("#chips a, #rail a").forEach((a) => (a.onclick = (e) => {
+      e.preventDefault();
+      document.getElementById("cat-" + a.dataset.cat).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }));
+    $$("#secciones .prod").forEach((el) => {
+      const cod = el.dataset.cod;
+      el.addEventListener("click", (e) => {
+        if (e.target.closest(".mas")) { rapido(cod); return; }
+        abrirProducto(cod);
+      });
+    });
+    pintarBotonesMas();
+    espiarSecciones();
+  }
+  function prodHTML(p) {
+    const agot = p.disponible === false;
+    return '<div class="prod' + (agot ? " agotado" : "") + '" data-cod="' + p.codigo + '" role="button" tabindex="0" aria-label="' + esc(p.nombre) + ", " + money(p.precio) + '">' +
+      fotoHTML(p, true) +
+      "<div><h3>" + esc(p.nombre) + (p.opciones ? '<span class="tag">Con o sin café</span>' : "") + "</h3>" +
+      "<p>" + esc(p.desc || "") + '</p><span class="precio num">' + (agot ? "Agotado" : money(p.precio)) + "</span></div>" +
+      (agot ? "<span></span>" : '<button class="mas" type="button" aria-label="Agregar ' + esc(p.nombre) + '">+</button>') + "</div>";
+  }
+  function pintarBotonesMas() {
+    $$("#secciones .prod").forEach((el) => {
+      const b = el.querySelector(".mas"); if (!b) return;
+      const n = cantEnCarrito(el.dataset.cod);
+      b.classList.toggle("tiene", n > 0);
+      b.innerHTML = n > 0 ? '<span class="n num">' + n + "</span>" : "+";
+    });
+  }
+  function rapido(cod) {
+    const p = prod[cod];
+    if (p.opciones) { abrirProducto(cod); return; }
+    agregar({ c: cod, q: 1, a: [] });
+    toast(p.nombre + " agregado");
+  }
+  document.addEventListener("keydown", (e) => {
+    const el = e.target.closest && e.target.closest(".prod");
+    if (el && (e.key === "Enter" || e.key === " ") && e.target === el) { e.preventDefault(); abrirProducto(el.dataset.cod); }
+  });
+
+  let obs;
+  function espiarSecciones() {
+    if (obs) obs.disconnect();
+    if (!("IntersectionObserver" in window)) return;
+    obs = new IntersectionObserver((ents) => {
+      ents.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const id = en.target.id.replace("cat-", "");
+        $$("#chips a, #rail a").forEach((a) => a.classList.toggle("on", a.dataset.cat === id));
+        const chip = $('#chips a[data-cat="' + id + '"]');
+        if (chip) chip.parentNode.scrollTo({ left: chip.offsetLeft - 16, behavior: "smooth" });
+      });
+    }, { rootMargin: "-30% 0px -65% 0px" });
+    $$("#secciones .seccion").forEach((s) => obs.observe(s));
+  }
+
+  // ---------- hoja de producto ----------
+  function abrirDialogo(d) { document.body.classList.add("lock"); d.showModal(); }
+  $("#form-producto").addEventListener("submit", (e) => { e.preventDefault(); const b = $("#p-agregar"); if (b) b.click(); });
+  ["#dlg-producto", "#dlg-carrito"].forEach((sel) => {
+    const d = $(sel);
+    d.addEventListener("close", () => { if (!$("dialog[open]")) document.body.classList.remove("lock"); });
+    d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+  });
+
+  function abrirProducto(cod, idxEditar) {
+    const p = prod[cod], editando = idxEditar != null ? S.carrito[idxEditar] : null;
+    const st = { q: editando ? editando.q : 1, o: editando ? editando.o : (p.opciones ? p.opciones[0] : undefined), a: editando ? (editando.a || []).slice() : [], x: editando ? editando.x || "" : "" };
+    const conAdic = DC.permiteAdiciones(p);
+    const f = $("#form-producto");
+    f.innerHTML =
+      '<button class="cerrar" type="button" value="x" aria-label="Cerrar" id="p-cerrar">✕</button>' +
+      '<div class="hoja-cuerpo"><div class="p-top">' + fotoHTML(p) + "<h2>" + esc(p.nombre) + "</h2><p>" + esc(p.desc || "") + '</p><span class="precio num">' + money(p.precio) + "</span></div>" +
+      (p.opciones ? '<fieldset><legend>Elige una opción <span class="mano" style="font-size:12px;letter-spacing:0">obligatorio</span></legend>' +
+        p.opciones.map((o, i) => '<label class="opc"><input type="radio" name="p-opc" value="' + esc(o) + '"' + (o === st.o ? " checked" : "") + "><span>" + esc(o) + "</span></label>").join("") + "</fieldset>" : "") +
+      (conAdic ? "<fieldset><legend>Adiciones</legend>" + CAT.adiciones.map((a) =>
+        '<label class="opc"><input type="checkbox" name="p-adic" value="' + a.codigo + '"' + (st.a.includes(a.codigo) ? " checked" : "") + "><span>" + esc(a.nombre) + '</span><em class="num">+' + money(a.precio) + "</em></label>").join("") + "</fieldset>" : "") +
+      '<div class="campo"><label class="lbl" for="p-nota">Indicaciones para la barra</label><input id="p-nota" maxlength="60" placeholder="Ej: sin azúcar, poco hielo, bien caliente" value="' + esc(st.x) + '"></div>' +
+      "</div>" +
+      '<div class="hoja-pie"><div class="stepper"><button type="button" id="p-menos" aria-label="Menos">−</button><output id="p-q" class="num">' + st.q + '</output><button type="button" id="p-mas" aria-label="Más">+</button></div>' +
+      '<button class="btn full" type="button" id="p-agregar"></button></div>';
+
+    const pintarBtn = () => {
+      const t = DC.lineaPrecio({ c: cod, q: st.q, a: st.a });
+      $("#p-q").textContent = st.q;
+      $("#p-agregar").innerHTML = (editando ? "Guardar cambios" : "Agregar") + ' · <span class="num">' + money(t) + "</span>";
+    };
+    pintarBtn();
+    $("#p-cerrar").onclick = () => $("#dlg-producto").close();
+    $("#p-menos").onclick = () => { st.q = Math.max(1, st.q - 1); pintarBtn(); };
+    $("#p-mas").onclick = () => { st.q = Math.min(20, st.q + 1); pintarBtn(); };
+    $$('input[name="p-opc"]', f).forEach((r) => (r.onchange = () => (st.o = r.value)));
+    $$('input[name="p-adic"]', f).forEach((c) => (c.onchange = () => { st.a = $$('input[name="p-adic"]:checked', f).map((x) => x.value); pintarBtn(); }));
+    $("#p-agregar").onclick = () => {
+      const linea = { c: cod, q: st.q, a: st.a.slice() };
+      if (st.o) linea.o = st.o;
+      const x = $("#p-nota").value.trim(); if (x) linea.x = x;
+      if (editando) { S.carrito.splice(idxEditar, 1); }
+      agregar(linea);
+      $("#dlg-producto").close();
+      if (editando) { pintarCarrito(); if (S.vista === "checkout") pintarResumen(); }
+      else toast(p.nombre + " agregado");
+    };
+    abrirDialogo($("#dlg-producto"));
+  }
+
+  // ---------- carrito ----------
+  function pintarBarra() {
+    const n = cuenta();
+    $("#badge").hidden = !n; $("#badge").textContent = n;
+    $("#barra").hidden = !n || !(S.vista === "inicio" || S.vista === "carta");
+    $("#barra-cnt").textContent = n; $("#barra-total").textContent = money(total());
+  }
+  $("#barra-btn").onclick = () => abrirCarrito();
+  $("#abrir-carrito").onclick = () => abrirCarrito();
+
+  function abrirCarrito() { pintarCarrito(); abrirDialogo($("#dlg-carrito")); }
+  function pintarCarrito() {
+    const h = $("#hoja-carrito");
+    const vacio = !S.carrito.length;
+    h.innerHTML = '<button class="cerrar" type="button" id="c-cerrar" aria-label="Cerrar">✕</button>' +
+      '<div class="hoja-cuerpo"><div><span class="eyebrow">Mi pedido</span><h2 style="margin:4px 0 0;font:500 34px/1 var(--f-display)">' + (vacio ? "Aún está vacío" : cuenta() + (cuenta() === 1 ? " producto" : " productos")) + "</h2></div>" +
+      (vacio ? '<p class="vacio">Toca + en cualquier producto para agregarlo.</p>' :
+        '<div class="lineas">' + S.carrito.map((l, i) => {
+          const p = prod[l.c];
+          return '<div class="linea">' + fotoHTML(p) +
+            '<button class="editar" type="button" data-edit="' + i + '"><b>' + esc(p.nombre) + "</b><small>" + esc(detalleLinea(l) || "Toca para personalizar") + "</small></button>" +
+            '<div class="der"><span class="num">' + money(DC.lineaPrecio(l)) + '</span><div class="stepper"><button type="button" data-menos="' + i + '" aria-label="Quitar uno">' + (l.q === 1 ? "🗑" : "−") + '</button><output class="num">' + l.q + '</output><button type="button" data-mas="' + i + '" aria-label="Sumar uno">+</button></div></div></div>';
+        }).join("") + "</div>" +
+        '<div class="totales"><span>Total</span><b class="num">' + money(total()) + '</b></div><p class="nota" style="margin:0">Impoconsumo incluido.</p>') +
+      "</div>" +
+      '<div class="hoja-pie">' + (vacio ? '<button class="btn full" type="button" id="c-seguir">Ver la carta</button>' :
+        '<button class="btn sec" type="button" id="c-seguir">Seguir</button><button class="btn full" type="button" id="c-continuar">Continuar · <span class="num">' + money(total()) + "</span></button>") + "</div>";
+    $("#c-cerrar").onclick = () => $("#dlg-carrito").close();
+    $("#c-seguir").onclick = () => { $("#dlg-carrito").close(); if (S.vista !== "carta") { pintarCarta(); mostrar("carta"); } };
+    const cont = $("#c-continuar"); if (cont) cont.onclick = () => { $("#dlg-carrito").close(); mostrar("checkout"); };
+    $$("[data-menos]", h).forEach((b) => (b.onclick = () => { const i = +b.dataset.menos; S.carrito[i].q--; if (S.carrito[i].q <= 0) S.carrito.splice(i, 1); guardarCarrito(); pintarCarrito(); }));
+    $$("[data-mas]", h).forEach((b) => (b.onclick = () => { const i = +b.dataset.mas; S.carrito[i].q = Math.min(20, S.carrito[i].q + 1); guardarCarrito(); pintarCarrito(); }));
+    $$("[data-edit]", h).forEach((b) => (b.onclick = () => { const i = +b.dataset.edit; $("#dlg-carrito").close(); abrirProducto(S.carrito[i].c, i); }));
+  }
+
+  // ---------- checkout ----------
+  const PAGOS = [
+    { id: "efectivo", txt: "Efectivo" },
+    { id: "transferencia", txt: "Transferencia (Nequi, Daviplata, Bancolombia)" },
+    { id: "datafono", txt: "Tarjeta en datáfono", sinDomicilio: true }
+  ];
+  function modoActual() { const r = $('input[name="modo"]:checked'); return r ? r.value : ""; }
+  function pintarCheckout() {
+    if (!S.carrito.length) { mostrar("carta", false); return; }
+    const f = $("#form-pedido"), pf = S.perfil;
+    if (!modoActual()) {
+      const m = mesaQR ? "mesa" : pf.modo || "";
+      if (m) $("#modo-" + m).checked = true;
+    }
+    if (mesaQR && !$("#f-mesa").value) $("#f-mesa").value = mesaQR;
+    ["nombre", "tel", "dir", "barrio", "ref"].forEach((k) => { const el = $("#f-" + k); if (!el.value && pf[k]) el.value = pf[k]; });
+    aplicarModo();
+    pintarResumen();
+    $("#error-envio").hidden = true;
+  }
+  function aplicarModo() {
+    const m = modoActual();
+    $$("[data-solo]").forEach((el) => (el.hidden = el.dataset.solo !== m));
+    $("[data-req-tel]").hidden = m === "mesa";
+    const prev = ($('input[name="pago"]:checked') || {}).value;
+    $("#pagos").innerHTML = PAGOS.filter((p) => !(p.sinDomicilio && m === "domicilio")).map((p, i) =>
+      '<label class="opc"><input type="radio" name="pago" value="' + p.id + '"' + ((prev ? prev === p.id : i === 0) ? " checked" : "") + "><span>" + esc(p.txt) + "</span></label>").join("");
+    if (!$('input[name="pago"]:checked')) $('input[name="pago"]').checked = true;
+    $("#err-modo").hidden = true;
+  }
+  $$('input[name="modo"]').forEach((r) => (r.onchange = aplicarModo));
+  function pintarResumen() {
+    $("#resumen").innerHTML = S.carrito.map((l, i) => {
+      const p = prod[l.c], d = detalleLinea(l);
+      return '<div class="fila"><span><b class="num">' + l.q + "×</b> " + esc(p.nombre) + (d ? "<small>" + esc(d) + "</small>" : "") + '</span><span class="num">' + money(DC.lineaPrecio(l)) + "</span></div>";
+    }).join("") + '<div class="fila" style="border-top:1px solid var(--linea);margin-top:6px;padding-top:12px"><b>Total</b><b class="num" style="color:var(--oro);font-size:18px">' + money(total()) + "</b></div>";
+    $("#btn-enviar").innerHTML = 'Enviar pedido · <span class="num">' + money(total()) + "</span>";
+  }
+  $("#volver-carta").onclick = () => history.back();
+
+  function validar() {
+    const m = modoActual(); let ok = true, primero = null;
+    const marcar = (id, malo) => {
+      const c = $("#f-" + id).closest(".campo"); c.classList.toggle("malo", malo); c.querySelector(".err").hidden = !malo;
+      if (malo) { ok = false; primero = primero || $("#f-" + id); }
+    };
+    if (!m) { $("#err-modo").hidden = false; ok = false; primero = $("#modo-mesa"); }
+    const tel = $("#f-tel").value.replace(/\D/g, "");
+    marcar("nombre", $("#f-nombre").value.trim().length < 2);
+    marcar("tel", m !== "mesa" ? !/^(57)?3\d{9}$|^\d{7,10}$/.test(tel) : tel.length > 0 && tel.length < 7);
+    marcar("mesa", m === "mesa" && !/^\d{1,3}$/.test($("#f-mesa").value.trim()));
+    marcar("dir", m === "domicilio" && $("#f-dir").value.trim().length < 5);
+    marcar("barrio", m === "domicilio" && $("#f-barrio").value.trim().length < 2);
+    if (primero) primero.focus();
+    return ok;
+  }
+
+  function armarPedido() {
+    const m = modoActual();
+    const o = {
+      id: DC.nuevoCodigo(), t: Date.now(), m,
+      n: $("#f-nombre").value.trim(), tel: $("#f-tel").value.trim(),
+      pago: ($('input[name="pago"]:checked') || {}).value || "efectivo",
+      obs: $("#f-obs").value.trim(),
+      it: S.carrito.map((l) => { const x = { c: l.c, q: l.q }; if (l.o) x.o = l.o; if (l.a && l.a.length) x.a = l.a; if (l.x) x.x = l.x; return x; }),
+      tot: total()
+    };
+    if (m === "mesa") o.mesa = $("#f-mesa").value.trim();
+    if (m === "recoger") o.hora = $("#f-hora").value;
+    if (m === "domicilio") { o.dir = $("#f-dir").value.trim(); o.bar = $("#f-barrio").value.trim(); o.ref = $("#f-ref").value.trim(); }
+    return o;
+  }
+
+  function textoWhatsApp(o) {
+    const L = ["*Pedido " + o.id + "* · " + DC.MODOS[o.m] + (o.mesa ? " " + o.mesa : ""), "Nombre: " + o.n];
+    if (o.tel) L.push("Cel: " + o.tel);
+    if (o.dir) L.push("Dirección: " + o.dir + ", " + o.bar + (o.ref ? " (" + o.ref + ")" : ""));
+    if (o.hora) L.push("Recoge: " + o.hora);
+    L.push("");
+    o.it.forEach((l) => { const d = detalleLinea(l); L.push(l.q + "x " + prod[l.c].nombre + (d ? " — " + d : "")); });
+    L.push("", "Total: " + money(o.tot), "Pago: " + (PAGOS.find((p) => p.id === o.pago) || {}).txt);
+    if (o.obs) L.push("Comentarios: " + o.obs);
+    return L.join("\n");
+  }
+
+  let enviando = false, pendiente = null;
+  $("#form-pedido").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (enviando || !validar()) return;
+    enviando = true;
+    const btn = $("#btn-enviar"); btn.disabled = true; btn.textContent = "Enviando…";
+    const o = pendiente || armarPedido(); pendiente = o;
+    $("#wa-respaldo").href = "https://wa.me/" + CFG.whatsapp + "?text=" + encodeURIComponent(textoWhatsApp(o));
+    try {
+      const cifrado = await DC.cifrarPedido(o);
+      const titulo = "Nuevo pedido " + o.id + " - " + DC.MODOS[o.m] + (o.mesa ? " " + o.mesa : "") + " - " + money(o.tot);
+      await DC.publicar(CFG.canalPedidos, cifrado, titulo, "high");
+      S.perfil = { modo: o.m, nombre: o.n, tel: o.tel, dir: o.dir || S.perfil.dir, barrio: o.bar || S.perfil.barrio, ref: o.ref || S.perfil.ref };
+      store.set("dc_perfil", S.perfil);
+      S.activo = { id: o.id, t: o.t, m: o.m, mesa: o.mesa, it: o.it, tot: o.tot, estado: "nuevo" };
+      store.set("dc_pedido_activo", S.activo);
+      S.carrito = []; guardarCarrito(); pendiente = null;
+      $("#f-obs").value = "";
+      pintarConfirmacion(); mostrar("conf"); history.replaceState({ v: "conf" }, "", location.search + "#conf");
+      seguirEstado();
+    } catch (err) {
+      $("#error-envio").hidden = false;
+      $("#error-envio").scrollIntoView({ behavior: "smooth", block: "center" });
+    } finally {
+      enviando = false; btn.disabled = false; pintarResumen();
+    }
+  });
+
+  // ---------- confirmación y seguimiento ----------
+  function textosEstado(m) {
+    return { nuevo: "Recibimos tu pedido", prep: "Estamos preparando tu pedido",
+      listo: m === "domicilio" ? "Tu pedido va en camino" : m === "recoger" ? "Listo, puedes pasar a recogerlo" : "Listo, ya va para tu mesa",
+      entregado: "Pedido entregado. ¡Disfrútalo!", cancelado: "Tu pedido fue cancelado. Escríbenos por WhatsApp si tienes dudas." };
+  }
+  function pintarConfirmacion() {
+    const a = S.activo; if (!a) return;
+    const est = a.estado || "nuevo", orden = ["nuevo", "prep", "listo"];
+    const idx = est === "entregado" ? 3 : orden.indexOf(est);
+    const lbl = { nuevo: "Recibido", prep: "Preparando", listo: a.m === "domicilio" ? "En camino" : "Listo" };
+    $("#conf").innerHTML =
+      '<span class="eyebrow">' + esc(DC.MODOS[a.m] + (a.mesa ? " · Mesa " + a.mesa : "")) + "</span>" +
+      "<h1>¡Gracias por tu pedido!</h1>" +
+      '<div><div class="codigo">' + esc(a.id) + '</div><p class="sub" style="margin-top:8px">Este es tu código. Muéstralo si te lo piden en caja.</p></div>' +
+      (est === "cancelado" ? '<p class="estado-txt cancelado">' + textosEstado(a.m).cancelado + "</p>" :
+        '<ol class="tracker">' + orden.map((s, i) => '<li class="' + (i <= idx ? "hecho" : "") + (i === idx ? " actual" : "") + '"><span class="dot">' + (i < idx || (i === idx && i === 2) ? "✓" : "") + "</span>" + lbl[s] + "</li>").join("") + "</ol>" +
+        '<p class="estado-txt" aria-live="polite">' + textosEstado(a.m)[est] + "</p>") +
+      '<div class="resumen">' + a.it.map((l) => { const d = detalleLinea(l); return '<div class="fila"><span><b class="num">' + l.q + "×</b> " + esc(prod[l.c] ? prod[l.c].nombre : l.c) + (d ? "<small>" + esc(d) + "</small>" : "") + '</span><span class="num">' + money(DC.lineaPrecio(l) || 0) + "</span></div>"; }).join("") +
+      '<div class="fila" style="border-top:1px solid var(--linea);margin-top:6px;padding-top:12px"><b>Total</b><b class="num" style="color:var(--oro)">' + money(a.tot) + "</b></div></div>" +
+      '<div class="acciones"><button class="btn" type="button" id="otro">Hacer otro pedido</button>' +
+      '<a class="btn sec" target="_blank" rel="noopener" href="https://wa.me/' + CFG.whatsapp + "?text=" + encodeURIComponent("Hola, les escribo sobre mi pedido " + a.id) + '">Escribir por WhatsApp</a></div>' +
+      '<p class="contacto">WhatsApp: +57 321 278 7690</p>';
+    $("#otro").onclick = () => { if (["entregado", "cancelado"].includes(a.estado)) { S.activo = null; store.del("dc_pedido_activo"); } pintarInicio(); mostrar("inicio"); };
+  }
+
+  let sub = null;
+  function seguirEstado() {
+    if (!S.activo || sub) return;
+    if (["entregado", "cancelado"].includes(S.activo.estado)) return;
+    const rango = { nuevo: 0, prep: 1, listo: 2, entregado: 3, cancelado: 3 };
+    sub = DC.suscribir([CFG.canalEstados], Math.floor(S.activo.t / 1000) - 5, (msg) => {
+      let e; try { e = JSON.parse(msg.message); } catch (_) { return; }
+      if (!S.activo || e.i !== S.activo.id || !(e.s in rango)) return;
+      if (rango[e.s] < rango[S.activo.estado || "nuevo"] && e.s !== "cancelado") return;
+      S.activo.estado = e.s; store.set("dc_pedido_activo", S.activo);
+      if (S.vista === "conf") pintarConfirmacion();
+      pintarAvisoActivo();
+      if (e.s === "listo") toast(textosEstado(S.activo.m).listo);
+      if (["entregado", "cancelado"].includes(e.s) && sub) { sub.cerrar(); sub = null; }
+    });
+  }
+
+  // ---------- arranque ----------
+  $("#ir-inicio").onclick = () => mostrar("inicio");
+  $("#volver-inicio").onclick = () => mostrar("inicio");
+  pintarInicio();
+  pintarCarta();
+  const h = location.hash.slice(1);
+  history.replaceState({ v: "inicio" }, "", location.search);
+  if (h === "conf" && S.activo) { pintarConfirmacion(); mostrar("conf"); }
+  else if (h === "carta" || (mesaQR && !S.activo)) mostrar("carta");
+  else mostrar("inicio", false);
+  seguirEstado();
+})();
+</script>
+</body>
+</html>

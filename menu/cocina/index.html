@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cocina · Dos Castillos Café</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0C0B0A">
+<link rel="icon" href="../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: tablero de 3 columnas (Nuevos → Preparando → Listos) en pantallas anchas; pestañas en tablet vertical y celular */
+:root {
+  --negro: #0C0B0A; --s1: #151210; --s2: #1E1915; --s3: #2A231C;
+  --linea: rgba(226,176,96,.16); --linea-fuerte: rgba(226,176,96,.4);
+  --crema: #F7F3EE; --texto2: #CFC6BC; --muted: #9E958C;
+  --oro: #E2B060; --naranja: #F0A020; --rojo: #E0566B;
+  --mesa: #E2B060; --recoger: #8FC1E8; --domicilio: #EE8A6A;
+  --nuevo: #F0A020; --prep: #8FC1E8; --listo: #86CF8A;
+  --f-display: "Cormorant Garamond", Georgia, serif;
+  --f-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html, body { height: 100% }
+body { margin: 0; background: var(--negro); color: var(--crema); font: 15px/1.45 var(--f-body); -webkit-font-smoothing: antialiased }
+button, input { font: inherit; color: inherit }
+button { cursor: pointer }
+:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px }
+[hidden] { display: none !important }
+.num { font-variant-numeric: tabular-nums }
+
+/* Acceso */
+.acceso { min-height: 100%; display: grid; place-items: center; padding: 24px 16px }
+.acceso form { width: 100%; max-width: 380px; display: grid; gap: 16px; text-align: center; justify-items: center }
+.acceso img { width: 96px; height: 96px; object-fit: contain }
+.acceso h1 { margin: 0; font: 500 40px/1 var(--f-display) }
+.acceso p { margin: 0; color: var(--muted); font-size: 14px }
+.acceso input[type=password] { width: 100%; background: var(--s2); border: 1px solid var(--linea-fuerte); border-radius: 12px; padding: 14px; font-size: 17px; text-align: center }
+.acceso label.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--texto2) }
+.acceso .err { color: var(--rojo); font-size: 14px }
+.btn { border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; background: var(--oro); color: #1a1208; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; white-space: nowrap }
+.btn.full { width: 100% }
+.btn.sec { background: transparent; color: var(--crema); border: 1px solid var(--linea-fuerte) }
+.btn.peq { padding: 8px 14px; font-size: 13px }
+.btn:disabled { opacity: .5 }
+
+/* Encabezado */
+.cab { position: sticky; top: 0; z-index: 10; background: rgba(12,11,10,.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linea); padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px }
+.cab .marca { display: flex; align-items: center; gap: 10px; margin-right: auto }
+.cab .marca img { width: 38px; height: 38px; object-fit: contain }
+.cab .marca b { font: 600 22px/1 var(--f-display); letter-spacing: .04em }
+.cab .marca small { display: block; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--oro) }
+.vivo { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--listo) }
+.vivo i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 0 currentColor; animation: late 2s infinite }
+.vivo.mal { color: var(--rojo) }
+.vivo.mal i { animation: none }
+@keyframes late { 70% { box-shadow: 0 0 0 8px transparent } }
+.kpis { display: flex; gap: 18px; font-size: 12px; color: var(--muted) }
+.kpis b { display: block; font-size: 20px; color: var(--crema); line-height: 1.1 }
+.herr { display: flex; gap: 8px; flex-wrap: wrap }
+.filtros { padding: 12px 16px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center }
+.filtros button { border: 1px solid var(--linea); background: var(--s1); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--texto2) }
+.filtros button[aria-pressed=true] { background: var(--crema); color: var(--negro); border-color: var(--crema) }
+.filtros .sp { flex: 1 }
+.cuota { font-size: 12px; color: var(--muted) }
+.cuota.baja { color: var(--naranja) }
+
+/* Tablero */
+.tabs { display: none }
+.tablero { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 14px 16px 24px; align-items: start }
+.col { min-width: 0; display: grid; gap: 12px; align-content: start }
+.col > h2 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; padding: 8px 2px; border-bottom: 2px solid var(--c) }
+.col > h2 .n { background: var(--c); color: #111; border-radius: 999px; min-width: 26px; height: 26px; padding: 0 8px; display: inline-grid; place-items: center; font-size: 13px; letter-spacing: 0 }
+.col[data-col=nuevo] { --c: var(--nuevo) } .col[data-col=prep] { --c: var(--prep) } .col[data-col=listo] { --c: var(--listo) }
+.col .vacio { color: var(--muted); font-size: 13px; padding: 18px 4px; border: 1px dashed var(--linea); border-radius: 14px; text-align: center }
+@media (max-width: 999px) {
+  .tabs { display: flex; gap: 6px; padding: 12px 16px 0 }
+  .tabs button { flex: 1; border: 1px solid var(--linea); background: var(--s1); border-radius: 12px; padding: 10px 6px; font-weight: 700; font-size: 13px; color: var(--texto2) }
+  .tabs button[aria-pressed=true] { border-color: var(--crema); background: var(--crema); color: var(--negro) }
+  .tablero { grid-template-columns: 1fr }
+  .col > h2 { display: none }
+  .col:not(.activa) { display: none }
+}
+
+/* Tarjeta de pedido (comanda) */
+.ped { background: var(--s1); border: 1px solid var(--linea); border-radius: 16px; overflow: hidden; display: grid }
+.ped.flash { animation: flash 1.2s ease 3 }
+@keyframes flash { 50% { box-shadow: 0 0 0 3px var(--nuevo); border-color: var(--nuevo) } }
+.ped-cab { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: color-mix(in srgb, var(--m) 16%, var(--s1)); border-bottom: 1px solid color-mix(in srgb, var(--m) 35%, transparent) }
+.ped[data-modo=mesa] { --m: var(--mesa) } .ped[data-modo=recoger] { --m: var(--recoger) } .ped[data-modo=domicilio] { --m: var(--domicilio) }
+.cod { font-size: 22px; font-weight: 800; letter-spacing: .04em }
+.modo { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #111; background: var(--m); padding: 4px 9px; border-radius: 6px; white-space: nowrap }
+.reloj { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--texto2); white-space: nowrap }
+.reloj.tarde { color: var(--naranja) } .reloj.muy { color: var(--rojo) }
+.items { list-style: none; margin: 0; padding: 12px 14px 4px; display: grid; gap: 10px }
+.items li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 8px; align-items: baseline }
+.items .q { font-size: 22px; font-weight: 800; color: var(--oro) }
+.items .nom { font-size: 18px; font-weight: 700; line-height: 1.2 }
+.items .det { display: block; font-size: 14px; color: var(--texto2); font-weight: 500 }
+.items .det .ad { color: var(--oro) }
+.items .det .nt { color: var(--naranja); font-weight: 700 }
+.obs { margin: 6px 14px 4px; padding: 8px 12px; border-radius: 10px; background: rgba(240,160,32,.12); border: 1px solid rgba(240,160,32,.4); color: var(--crema); font-size: 14px; font-weight: 600 }
+.cliente { padding: 10px 14px; display: grid; gap: 3px; font-size: 13.5px; color: var(--texto2); border-top: 1px dashed var(--linea); margin-top: 8px }
+.cliente b { color: var(--crema) }
+.cliente a { color: var(--oro) }
+.pie-ped { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px 14px }
+.pie-ped .tot { margin-right: auto; font-size: 18px; font-weight: 800 }
+.pie-ped .tot small { display: block; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .04em }
+.alerta { color: var(--rojo); font-size: 12px; font-weight: 700 }
+.accion { font-size: 15px; padding: 12px 18px }
+.accion[data-a=prep] { background: var(--prep) } .accion[data-a=listo] { background: var(--listo) } .accion[data-a=entregado] { background: var(--crema) }
+.icono-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linea-fuerte); background: none; display: grid; place-items: center; font-size: 16px; color: var(--texto2) }
+.confirmar { display: flex; gap: 8px; align-items: center; width: 100%; padding-top: 4px; font-size: 14px; font-weight: 600; color: var(--rojo) }
+
+/* Historial */
+.hist { padding: 0 16px 60px }
+.hist details { border-top: 1px solid var(--linea); padding-top: 12px }
+.hist summary { cursor: pointer; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--texto2) }
+.tabla-wrap { overflow-x: auto; margin-top: 12px }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 680px }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--linea); vertical-align: top }
+th { color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: .12em; text-transform: uppercase }
+td.r, th.r { text-align: right }
+.est { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: var(--s3) }
+.est.cancelado { color: var(--rojo) } .est.entregado { color: var(--listo) }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 50; background: var(--crema); color: var(--negro); border-radius: 999px; padding: 10px 10px 10px 18px; font-weight: 700; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: calc(100% - 32px) }
+.toast button { border: 0; background: var(--negro); color: var(--crema); border-radius: 999px; padding: 6px 12px; font-weight: 700 }
+
+#ticket { display: none }
+@media print {
+  @page { size: 80mm auto; margin: 4mm }
+  body { background: #fff; color: #000 }
+  body > *:not(#ticket) { display: none !important }
+  #ticket { display: block; font: 12pt/1.35 "Courier New", monospace; color: #000 }
+  #ticket h1 { font-size: 20pt; margin: 0 0 4px } #ticket hr { border: 0; border-top: 1px dashed #000 }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+</head>
+<body>
+
+<section class="acceso" id="v-acceso">
+  <form id="form-acceso" autocomplete="off">
+    <img src="../assets/img/logo.png" alt="Dos Castillos Café">
+    <h1>Panel de cocina</h1>
+    <p>Escribe la clave de cocina para ver los pedidos. Solo el equipo la tiene.</p>
+    <input type="password" id="clave" placeholder="Clave de cocina" aria-label="Clave de cocina" autocomplete="current-password">
+    <label class="chk"><input type="checkbox" id="recordar" checked> Recordar en este equipo</label>
+    <span class="err" id="err-clave" hidden>La clave no es correcta. Revísala e intenta de nuevo.</span>
+    <button class="btn full" type="submit" id="btn-entrar">Entrar</button>
+  </form>
+</section>
+
+<div id="v-panel" hidden>
+  <header class="cab">
+    <div class="marca"><img src="../assets/img/logo.png" alt=""><div><b>Cocina</b><small>Dos Castillos Café</small></div></div>
+    <span class="vivo mal" id="vivo"><i></i><span>Conectando…</span></span>
+    <div class="kpis">
+      <span><b class="num" id="k-pend">0</b>en curso</span>
+      <span><b class="num" id="k-hoy">0</b>pedidos hoy</span>
+      <span><b class="num" id="k-ventas">$0</b>ventas hoy</span>
+    </div>
+    <div class="herr">
+      <button class="btn sec peq" id="btn-sonido" type="button">🔔 Sonido activo</button>
+      <button class="btn sec peq" id="btn-csv" type="button">Exportar día (CSV)</button>
+      <button class="btn sec peq" id="btn-salir" type="button">Salir</button>
+    </div>
+  </header>
+  <div class="filtros" role="group" aria-label="Filtrar por tipo">
+    <button type="button" data-f="" aria-pressed="true">Todos</button>
+    <button type="button" data-f="mesa" aria-pressed="false">Mesa</button>
+    <button type="button" data-f="recoger" aria-pressed="false">Recoger</button>
+    <button type="button" data-f="domicilio" aria-pressed="false">Domicilio</button>
+    <span class="sp"></span>
+    <span class="cuota" id="cuota"></span>
+  </div>
+  <div class="tabs" role="group" aria-label="Columna">
+    <button type="button" data-t="nuevo" aria-pressed="true">Nuevos <span class="num" data-n="nuevo">0</span></button>
+    <button type="button" data-t="prep" aria-pressed="false">Preparando <span class="num" data-n="prep">0</span></button>
+    <button type="button" data-t="listo" aria-pressed="false">Listos <span class="num" data-n="listo">0</span></button>
+  </div>
+  <main class="tablero">
+    <section class="col activa" data-col="nuevo"><h2>Nuevos <span class="n num" data-n="nuevo">0</span></h2><div class="lista"></div></section>
+    <section class="col" data-col="prep"><h2>En preparación <span class="n num" data-n="prep">0</span></h2><div class="lista"></div></section>
+    <section class="col" data-col="listo"><h2>Listos / despachados <span class="n num" data-n="listo">0</span></h2><div class="lista"></div></section>
+  </main>
+  <section class="hist">
+    <details id="hist"><summary>Entregados y cancelados hoy (<span class="num" id="n-hist">0</span>)</summary><div class="tabla-wrap" id="tabla-hist"></div></details>
+  </section>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<div id="ticket"></div>
+
+<script src="../assets/catalogo.js"></script>
+<script src="../assets/config.js"></script>
+<script src="../assets/core.js"></script>
+<script>
+(function () {
+  const CFG = window.CONFIG, { money, esc, prod, adic } = DC;
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+  const ls = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (_) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} }
+  };
+  const hoyKey = (ms) => { const d = new Date(ms); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+
+  // ---------- llaves en IndexedDB (no exportables) ----------
+  const idb = {
+    abrir() { return new Promise((ok, mal) => { const r = indexedDB.open("dcc-cocina", 1); r.onupgradeneeded = () => r.result.createObjectStore("llaves"); r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error); }); },
+    async get() { const db = await this.abrir(); return new Promise((ok) => { const r = db.transaction("llaves").objectStore("llaves").get("k"); r.onsuccess = () => ok(r.result || null); r.onerror = () => ok(null); }); },
+    async set(v) { const db = await this.abrir(); return new Promise((ok) => { const t = db.transaction("llaves", "readwrite"); v ? t.objectStore("llaves").put(v, "k") : t.objectStore("llaves").delete("k"); t.oncomplete = ok; t.onerror = ok; }); }
+  };
+
+  const S = { llaves: null, pedidos: {}, filtro: "", tab: "nuevo", sonido: ls.get("dcc_sonido", true), listo: false, cancelando: null };
+  // S.pedidos[id] = { o: pedido, recibido: ms, estado, cambios: {estado: ms}, total, alerta }
+
+  // ---------- acceso ----------
+  $("#form-acceso").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("#btn-entrar"); btn.disabled = true; btn.textContent = "Verificando…";
+    prepararAudio();
+    try {
+      S.llaves = await DC.abrirLlaveCocina($("#clave").value);
+      if ($("#recordar").checked) { try { await idb.set(S.llaves); } catch (_) {} }
+      $("#err-clave").hidden = true;
+      iniciar();
+    } catch (_) {
+      $("#err-clave").hidden = false; $("#clave").select();
+    } finally { btn.disabled = false; btn.textContent = "Entrar"; }
+  });
+  $("#btn-salir").onclick = async () => { try { await idb.set(null); } catch (_) {} location.reload(); };
+
+  // ---------- sonido ----------
+  let actx = null;
+  function prepararAudio() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch (_) {} }
+  function campana() {
+    if (!S.sonido || !actx) return;
+    const t0 = actx.currentTime;
+    [[880, 0], [1320, .18], [1760, .36]].forEach(([f, d]) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t0 + d); g.gain.linearRampToValueAtTime(.35, t0 + d + .02); g.gain.exponentialRampToValueAtTime(.001, t0 + d + .9);
+      o.connect(g).connect(actx.destination); o.start(t0 + d); o.stop(t0 + d + 1);
+    });
+  }
+  function pintarSonido() { $("#btn-sonido").textContent = S.sonido ? "🔔 Sonido activo" : "🔕 Sonido apagado"; }
+  $("#btn-sonido").onclick = () => { S.sonido = !S.sonido; ls.set("dcc_sonido", S.sonido); prepararAudio(); pintarSonido(); if (S.sonido) campana(); };
+  document.addEventListener("pointerdown", prepararAudio, { once: true });
+
+  // ---------- persistencia local (historial más allá de las 12 h del canal) ----------
+  function guardarLocal() {
+    const porDia = {};
+    Object.values(S.pedidos).forEach((p) => { (porDia[hoyKey(p.recibido)] = porDia[hoyKey(p.recibido)] || {})[p.o.id] = p; });
+    Object.entries(porDia).forEach(([d, v]) => ls.set("dcc_dia_" + d, v));
+  }
+  function cargarLocal() {
+    const d = ls.get("dcc_dia_" + hoyKey(Date.now()), {});
+    Object.assign(S.pedidos, d);
+    try { // limpiar días de más de 30 días
+      const lim = hoyKey(Date.now() - 30 * 864e5);
+      Object.keys(localStorage).filter((k) => k.startsWith("dcc_dia_") && k.slice(8) < lim).forEach((k) => localStorage.removeItem(k));
+    } catch (_) {}
+  }
+
+  // ---------- flujo en vivo ----------
+  let sub;
+  function iniciar() {
+    $("#v-acceso").hidden = true; $("#v-panel").hidden = false;
+    pintarSonido(); cargarLocal(); pintar();
+    let primeraCarga = true; setTimeout(() => { primeraCarga = false; S.listo = true; }, 4000);
+    sub = DC.suscribir([CFG.canalPedidos, CFG.canalEstados], "12h", async (msg) => {
+      if (msg.topic === CFG.canalPedidos) await recibirPedido(msg, primeraCarga);
+      else await recibirEstado(msg);
+    }, (st) => {
+      const v = $("#vivo"); v.classList.toggle("mal", st !== "vivo");
+      v.lastElementChild.textContent = st === "vivo" ? "En vivo" : "Reconectando…";
+    });
+    setInterval(pintarRelojes, 30000);
+    cuota(); setInterval(cuota, 5 * 60000);
+    pedirPantallaActiva();
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pedirPantallaActiva(); });
+  }
+
+  // El replay del canal llega en orden; los estados de un pedido pueden llegar antes de que termine de descifrarse
+  let cola = Promise.resolve();
+  const pendientesEstado = {};
+  function recibirPedido(msg, historico) {
+    cola = cola.then(async () => {
+      let o; try { o = await DC.descifrarPedido(msg.message, S.llaves); } catch (_) { return; }
+      if (!o || !o.id || !Array.isArray(o.it)) return;
+      const existe = S.pedidos[o.id];
+      if (!existe) {
+        const calc = DC.totalPedido(o.it);
+        S.pedidos[o.id] = { o, recibido: msg.time * 1000, estado: "nuevo", cambios: { nuevo: msg.time * 1000 }, total: calc == null ? o.tot : calc, alerta: calc == null ? "Producto desconocido" : calc !== o.tot ? "El total enviado (" + money(o.tot) + ") no coincide" : "" };
+        (pendientesEstado[o.id] || []).forEach((e) => aplicarEstado(e));
+        delete pendientesEstado[o.id];
+        guardarLocal(); pintar();
+        if (!historico && S.pedidos[o.id].estado === "nuevo") { campana(); destacar(o.id); }
+      }
+    });
+    return cola;
+  }
+  function recibirEstado(msg) {
+    cola = cola.then(async () => {
+      let e; try { e = JSON.parse(msg.message); } catch (_) { return; }
+      if (!(await DC.verificarEstado(e, S.llaves))) return; // ignora estados que no vienen de cocina
+      if (!S.pedidos[e.i]) { (pendientesEstado[e.i] = pendientesEstado[e.i] || []).push(e); return; }
+      aplicarEstado(e); guardarLocal(); pintar();
+    });
+    return cola;
+  }
+  function aplicarEstado(e) {
+    const p = S.pedidos[e.i]; if (!p || !DC.ESTADOS[e.s]) return;
+    const t = e.t * 1000;
+    if (p.tEstado && t < p.tEstado) return;
+    p.estado = e.s; p.tEstado = t; p.cambios[e.s] = t;
+  }
+
+  async function cambiarEstado(id, nuevo, deshacible = true) {
+    const p = S.pedidos[id]; if (!p) return;
+    const anterior = p.estado;
+    const e = await DC.firmarEstado({ i: id, s: nuevo, t: Math.floor(Date.now() / 1000) + (p.tEstado && Date.now() <= p.tEstado ? 1 : 0) }, S.llaves);
+    aplicarEstado(e); guardarLocal(); pintar();
+    enviarEstado(e, 0);
+    if (deshacible) toast(DC.ESTADOS[nuevo].txt + " · " + id, "Deshacer", () => cambiarEstado(id, anterior, false));
+  }
+  function enviarEstado(e, intento) {
+    DC.publicar(CFG.canalEstados, JSON.stringify(e)).catch((err) => {
+      if (intento < 5) setTimeout(() => enviarEstado(e, intento + 1), 4000 * (intento + 1));
+      else toast("No se pudo sincronizar " + e.i + ". Revisa la conexión.");
+      if (err.status === 429) cuota();
+    });
+  }
+
+  // ---------- pintar ----------
+  const SIG = { nuevo: "prep", prep: "listo", listo: "entregado" };
+  function textoAccion(p) {
+    if (p.estado === "nuevo") return "Empezar";
+    if (p.estado === "prep") return p.o.m === "domicilio" ? "Despachar" : "Marcar listo";
+    return p.o.m === "domicilio" ? "Entregado" : p.o.m === "recoger" ? "Recogido" : "Entregado en mesa";
+  }
+  function modoTxt(o) {
+    if (o.m === "mesa") return "Mesa " + (o.mesa || "?");
+    if (o.m === "recoger") return "Recoger";
+    return "Domicilio";
+  }
+  function detalle(l) {
+    const d = [];
+    if (l.o) d.push(esc(l.o));
+    (l.a || []).forEach((a) => d.push('<span class="ad">+ ' + esc(adic[a] ? adic[a].nombre : a) + "</span>"));
+    if (l.x) d.push('<span class="nt">“' + esc(l.x) + "”</span>");
+    return d.join(" · ");
+  }
+  function minutos(ms) { return Math.max(0, Math.floor((Date.now() - ms) / 60000)); }
+  function reloj(p) {
+    const m = minutos(p.recibido);
+    const cls = p.estado === "listo" ? "" : m >= 20 ? " muy" : m >= 10 ? " tarde" : "";
+    return '<span class="reloj num' + cls + '" data-t="' + p.recibido + '">' + (m < 1 ? "ahora" : "hace " + m + " min") + "</span>";
+  }
+  const PAGO = { efectivo: "Efectivo", transferencia: "Transferencia", datafono: "Datáfono" };
+  function tarjeta(p) {
+    const o = p.o, tel = (o.tel || "").replace(/\D/g, "");
+    const wa = tel ? "https://wa.me/" + (tel.length === 10 ? "57" + tel : tel) + "?text=" + encodeURIComponent("Hola " + o.n + ", te escribimos de Dos Castillos Café sobre tu pedido " + o.id + ".") : "";
+    const dirTxt = o.dir ? o.dir + (o.bar ? ", " + o.bar : "") : "";
+    const cancelando = S.cancelando === o.id;
+    return '<article class="ped" data-id="' + esc(o.id) + '" data-modo="' + esc(o.m) + '">' +
+      '<div class="ped-cab"><span class="cod">' + esc(o.id) + '</span><span class="modo">' + esc(modoTxt(o)) + "</span>" + reloj(p) + "</div>" +
+      '<ul class="items">' + o.it.map((l) => '<li><span class="q num">' + l.q + '×</span><span><span class="nom">' + esc(prod[l.c] ? prod[l.c].nombre : l.c) + '</span><span class="det">' + detalle(l) + "</span></span></li>").join("") + "</ul>" +
+      (o.obs ? '<div class="obs">Nota: ' + esc(o.obs) + "</div>" : "") +
+      '<div class="cliente"><span><b>' + esc(o.n) + "</b>" + (o.hora ? " · pasa " + esc(o.hora.toLowerCase()) : "") + "</span>" +
+      (tel ? '<span>Cel: <a href="tel:' + esc(tel) + '">' + esc(o.tel) + '</a> · <a href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a></span>' : "") +
+      (dirTxt ? '<span>Dirección: <a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(dirTxt) + '" target="_blank" rel="noopener">' + esc(dirTxt) + "</a>" + (o.ref ? " · " + esc(o.ref) : "") + "</span>" : "") +
+      "</div>" +
+      '<div class="pie-ped"><span class="tot num">' + money(p.total) + "<small>" + esc(PAGO[o.pago] || o.pago) + "</small>" + (p.alerta ? '<span class="alerta">⚠ ' + esc(p.alerta) + "</span>" : "") + "</span>" +
+      (cancelando ? '<span class="confirmar">¿Cancelar este pedido? <button class="btn peq" data-si-cancelar>Sí, cancelar</button><button class="btn sec peq" data-no-cancelar>No</button></span>' :
+        '<button class="icono-btn" type="button" data-imprimir title="Imprimir comanda" aria-label="Imprimir comanda">🖨</button>' +
+        '<button class="icono-btn" type="button" data-cancelar title="Cancelar pedido" aria-label="Cancelar pedido">✕</button>' +
+        '<button class="btn accion" type="button" data-a="' + SIG[p.estado] + '">' + textoAccion(p) + "</button>") +
+      "</div></article>";
+  }
+
+  function pintar() {
+    const lista = Object.values(S.pedidos).filter((p) => hoyKey(p.recibido) === hoyKey(Date.now()) || !["entregado", "cancelado"].includes(p.estado));
+    const vis = lista.filter((p) => !S.filtro || p.o.m === S.filtro);
+    ["nuevo", "prep", "listo"].forEach((st) => {
+      const ps = vis.filter((p) => p.estado === st).sort((a, b) => a.recibido - b.recibido);
+      const cont = $('.col[data-col="' + st + '"] .lista');
+      cont.innerHTML = ps.length ? ps.map(tarjeta).join("") : '<div class="vacio">' + (st === "nuevo" ? "Sin pedidos nuevos. Los verás aquí al instante." : "Nada por aquí.") + "</div>";
+      $$('[data-n="' + st + '"]').forEach((n) => (n.textContent = ps.length));
+    });
+    const hoy = Object.values(S.pedidos).filter((p) => hoyKey(p.recibido) === hoyKey(Date.now()));
+    const validos = hoy.filter((p) => p.estado !== "cancelado");
+    $("#k-pend").textContent = lista.filter((p) => ["nuevo", "prep", "listo"].includes(p.estado)).length;
+    $("#k-hoy").textContent = validos.length;
+    $("#k-ventas").textContent = money(validos.reduce((s, p) => s + (p.total || 0), 0));
+    const nNuevos = lista.filter((p) => p.estado === "nuevo").length;
+    document.title = (nNuevos ? "(" + nNuevos + ") " : "") + "Cocina · Dos Castillos Café";
+    pintarHistorial(hoy.filter((p) => ["entregado", "cancelado"].includes(p.estado)));
+  }
+  function pintarHistorial(ps) {
+    $("#n-hist").textContent = ps.length;
+    ps.sort((a, b) => b.recibido - a.recibido);
+    $("#tabla-hist").innerHTML = ps.length ? "<table><thead><tr><th>Hora</th><th>Código</th><th>Tipo</th><th>Cliente</th><th>Productos</th><th class=r>Total</th><th>Estado</th><th></th></tr></thead><tbody>" +
+      ps.map((p) => "<tr><td class=num>" + new Date(p.recibido).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }) + "</td><td><b>" + esc(p.o.id) + "</b></td><td>" + esc(modoTxt(p.o)) + "</td><td>" + esc(p.o.n) + "</td><td>" +
+        p.o.it.map((l) => l.q + "× " + esc(prod[l.c] ? prod[l.c].nombre : l.c)).join(", ") + '</td><td class="r num">' + money(p.total) + '</td><td><span class="est ' + p.estado + '">' + DC.ESTADOS[p.estado].txt + '</span></td><td><button class="btn sec peq" data-reabrir="' + esc(p.o.id) + '">Reabrir</button></td></tr>').join("") + "</tbody></table>"
+      : '<p style="color:var(--muted);font-size:13px">Todavía no hay pedidos cerrados hoy.</p>';
+  }
+  function pintarRelojes() {
+    $$(".reloj[data-t]").forEach((r) => {
+      const p = S.pedidos[r.closest(".ped").dataset.id]; if (!p) return;
+      r.outerHTML = reloj(p);
+    });
+  }
+  function destacar(id) {
+    const el = $('.ped[data-id="' + id + '"]'); if (el) el.classList.add("flash");
+    if (innerWidth < 1000 && S.tab !== "nuevo") toast("Nuevo pedido " + id, "Ver", () => cambiarTab("nuevo"));
+  }
+
+  // ---------- acciones ----------
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".ped"), id = card && card.dataset.id;
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.a && id) { cambiarEstado(id, b.dataset.a); return; }
+    if (b.hasAttribute("data-cancelar")) { S.cancelando = id; pintar(); return; }
+    if (b.hasAttribute("data-no-cancelar")) { S.cancelando = null; pintar(); return; }
+    if (b.hasAttribute("data-si-cancelar")) { S.cancelando = null; cambiarEstado(id, "cancelado"); return; }
+    if (b.hasAttribute("data-imprimir")) { imprimir(id); return; }
+    if (b.dataset.reabrir) { cambiarEstado(b.dataset.reabrir, "prep"); return; }
+    if (b.dataset.f !== undefined && b.closest(".filtros")) {
+      S.filtro = b.dataset.f; $$(".filtros button").forEach((x) => x.setAttribute("aria-pressed", x === b)); pintar(); return;
+    }
+    if (b.dataset.t) cambiarTab(b.dataset.t);
+  });
+  function cambiarTab(t) {
+    S.tab = t;
+    $$(".tabs button").forEach((x) => x.setAttribute("aria-pressed", x.dataset.t === t));
+    $$(".col").forEach((c) => c.classList.toggle("activa", c.dataset.col === t));
+  }
+
+  function imprimir(id) {
+    const p = S.pedidos[id], o = p.o;
+    $("#ticket").innerHTML = "<h1>" + esc(o.id) + "</h1><div><b>" + esc(modoTxt(o).toUpperCase()) + "</b> · " + new Date(p.recibido).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }) + "</div><div>" + esc(o.n) + (o.tel ? " · " + esc(o.tel) : "") + "</div>" +
+      (o.dir ? "<div>" + esc(o.dir + ", " + (o.bar || "")) + (o.ref ? " (" + esc(o.ref) + ")" : "") + "</div>" : "") + "<hr>" +
+      o.it.map((l) => "<div><b>" + l.q + "x " + esc(prod[l.c] ? prod[l.c].nombre : l.c) + "</b></div>" + (detalle(l) ? "<div>&nbsp;&nbsp;" + detalle(l).replace(/<[^>]+>/g, "") + "</div>" : "")).join("") +
+      (o.obs ? "<hr><div>NOTA: " + esc(o.obs) + "</div>" : "") + "<hr><div>Total " + money(p.total) + " · " + esc(PAGO[o.pago] || o.pago) + "</div>";
+    window.print();
+  }
+
+  $("#btn-csv").onclick = () => {
+    const hoy = Object.values(S.pedidos).filter((p) => hoyKey(p.recibido) === hoyKey(Date.now())).sort((a, b) => a.recibido - b.recibido);
+    const q = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+    const filas = [["Fecha", "Hora", "Código", "Tipo", "Mesa", "Cliente", "Celular", "Dirección", "Barrio", "Productos", "Total", "Pago", "Estado", "Comentarios"].map(q).join(";")];
+    hoy.forEach((p) => {
+      const o = p.o, d = new Date(p.recibido);
+      filas.push([hoyKey(p.recibido), d.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }), o.id, DC.MODOS[o.m], o.mesa, o.n, o.tel, o.dir, o.bar,
+        o.it.map((l) => l.q + "x " + (prod[l.c] ? prod[l.c].nombre : l.c) + (l.o ? " (" + l.o + ")" : "") + ((l.a || []).length ? " +" + l.a.map((a) => adic[a] ? adic[a].nombre : a).join(" +") : "") + (l.x ? ' "' + l.x + '"' : "")).join(" | "),
+        p.total, PAGO[o.pago] || o.pago, DC.ESTADOS[p.estado].txt, o.obs].map(q).join(";"));
+    });
+    const blob = new Blob(["﻿" + filas.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "pedidos-dos-castillos-" + hoyKey(Date.now()) + ".csv";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+
+  let toastT;
+  function toast(msg, accion, fn) {
+    const t = $("#toast"); t.hidden = false;
+    t.innerHTML = "<span>" + esc(msg) + "</span>" + (accion ? '<button type="button">' + esc(accion) + "</button>" : "");
+    if (accion) t.querySelector("button").onclick = () => { t.hidden = true; fn(); };
+    clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 5000);
+  }
+
+  async function cuota() {
+    try {
+      const r = await fetch(DC.NTFY + "v1/account"); const j = await r.json();
+      const rest = j.stats.messages_remaining, lim = j.limits.messages;
+      const el = $("#cuota"); el.textContent = "Cambios de estado disponibles hoy en esta red: " + rest + " de " + lim;
+      el.classList.toggle("baja", rest < 40);
+    } catch (_) {}
+  }
+  let wake = null;
+  async function pedirPantallaActiva() { try { if ("wakeLock" in navigator && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => (wake = null)); } } catch (_) {} }
+
+  // ---------- arranque: sesión recordada ----------
+  (async () => {
+    try { const k = await idb.get(); if (k && k.priv && k.mac) { S.llaves = k; iniciar(); return; } } catch (_) {}
+    $("#clave").focus();
+  })();
+})();
+</script>
+</body>
+</html>
